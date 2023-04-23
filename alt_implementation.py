@@ -101,35 +101,95 @@ class Node:
 		# Node is empty so check sibling for extra key
 		# Checks whether parent is a 2-node or 3-node
 		if len(self.parent.child) == 3:
-			print("parent is a 3-node")
-			for i in range(3):
+			for i in range(len(self.parent.child)):
 				if self.parent.child[i].data == []:
-					print("child found at location " + str(i))
 					if i == 0:
 						# Left child
 						# Check if middle child has a spare
 						if len(self.parent.child[1].data) == 2:
 							# Has a spare key
 							# Copies the left key from the parent into the deleted node
-							self.parent.child[0].data[0].append(self.parent[0])
+							self.parent.child[0].data.append(self.parent.data[0])
 							# Overwrites the left data node in the parent with the data from the middle child
 							self.parent.data[0] = self.parent.child[1].data[0]
 							# Sort parent node to ensure its in correct order
 							self.parent.data.sort()
 							# Delete duplicate data in middle child
-							self.parent.child[1].data[0].remove()
+							self.parent.child[1].data.remove(self.parent.child[1].data[0])
+							# Sort the children just to make sure they are in the correct order
+							self.parent.child[1].data.sort()
+							self.parent.child[0].data.sort()
+						else:
+							# Merge one value from parent and one from middle node
+							self.parent.child[1].data.append(self.parent.data[0])
+							self.parent.data.remove(self.parent.data[0])
+							del self.parent.child[0]
+							self.parent.data.sort()
+							self.parent.child[0].data.sort()
 					elif i == 1:
-						#middle child
-						pass
+						# Middle child
+						# Check if Left child has a spare
+						if len(self.parent.child[0].data) == 2:
+							# Has a spare key
+							# Copies the left key from the parent into the deleted node
+							self.parent.child[1].data.append(self.parent.data[0])
+							# Overwrites the left data node in the parent with the data from the left child
+							self.parent.data[0] = self.parent.child[0].data[1]
+							# Sort parent node to ensure its in correct order
+							self.parent.data.sort()
+							# Delete duplicate data in left child
+							self.parent.child[0].data.remove(self.parent.child[0].data[1])
+							# Sort the children just to make sure they are in the correct order
+							self.parent.child[1].data.sort()
+							self.parent.child[0].data.sort()
+						# Check if right child has a spare
+						elif len(self.parent.child[2].data) == 2:
+							# Has a spare key
+							# Copies the right key from the parent into the deleted node
+							self.parent.child[1].data.append(self.parent.data[1])
+							# Overwrites the right data node in the parent with the data from the right child
+							self.parent.data[1] = self.parent.child[2].data[0]
+							# Sort parent node to ensure its in correct order
+							self.parent.data.sort()
+							# Delete duplicate data in right child
+							self.parent.child[2].data.remove(self.parent.child[2].data[0])
+							# Sort the children just to make sure they are in the correct order
+							self.parent.child[1].data.sort()
+							self.parent.child[2].data.sort()
+						else:
+							# Merge one value from parent and one from left node
+							self.parent.child[0].data.append(self.parent.data[0])
+							self.parent.data.remove(self.parent.data[0])
+							del self.parent.child[1]
+							self.parent.data.sort()
+							self.parent.child[0].data.sort()
 					elif i == 2:
-						#right child
-						pass
+						# Right child
+						# Check if middle child has a spare
+						if len(self.parent.child[1].data) == 2:
+							# Has a spare key
+							# Copies the right key from the parent into the deleted node
+							self.parent.child[2].data.append(self.parent.data[1])
+							# Overwrites the right data node in the parent with the data from the middle child
+							self.parent.data[1] = self.parent.child[1].data[1]
+							# Sort parent node to ensure its in correct order
+							self.parent.data.sort()
+							# Delete duplicate data in middle child
+							self.parent.child[1].data.remove(self.parent.child[1].data[1])
+							# Sort the children just to make sure they are in the correct order
+							self.parent.child[1].data.sort()
+							self.parent.child[2].data.sort()
+						else:
+							# Merge one value from parent and one from middle node
+							self.parent.child[1].data.append(self.parent.data[1])
+							self.parent.data.remove(self.parent.data[1])
+							del self.parent.child[2]
+							self.parent.data.sort()
+							self.parent.child[1].data.sort()
 		elif len(self.parent.child) == 2:
 			#It is a 2-node
-			print("parent is a 2-node")
 			for i in range(2):
 				if self.parent.child[i].data == []:
-					print("child found at location " + str(i))
 					if i == 0:
 						# Deleted node is a left child
 						# Check right child to see if it can share
@@ -180,22 +240,19 @@ class Node:
 	def case1(self, item):
 		# As its a leaf, delete the key
 		self.data.remove(item)
-		# If that node is now empty check its sibling to see if it has extra keys to offer
-		if len(self.data) < 1:
-			self.case12(item)
-		else:
+		if len(self.data) >= 1 or self.parent == None:
 			self.case11(item)
+		# If that node is now empty check its sibling to see if it has extra keys to offer
+		elif len(self.data) < 1:
+			self.case12(item)
 
 	def _remove(self, item):
 		# print ("Find " + str(item))
 		if item in self.data:
-			print("time to die number: " + str(self.data))
 			# Check what case we are in
 			# Check to see if its a leaf. If its child is a NULL node then its a leaf
 			if self._isLeaf():
-				print("Leaf detected")
 				self.case1(item)
-
 			return self.data
 		elif self._isLeaf():
 			return False
@@ -248,9 +305,15 @@ class Tree:
 tree = Tree()
 
 #lst = [13, 7, 24, 15, 4, 29, 20, 16, 19, 1, 5, 22, 17]
-lst = [16,12,18]#,22,19]
+lst = [24,26,32,34,30,28]
 for item in lst:
 	tree.insert(item)
 tree.preorder()
+tree.remove(24)
+tree.insert(36)
+tree.remove(30)
+tree.preorder()
+
+
 
 tree.preorder()
