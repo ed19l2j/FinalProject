@@ -3,7 +3,6 @@
 
 class Node:
 	def __init__(self, data, par = None):
-		#print ("Node __init__: " + str(data))
 		self.data = list([data])
 		self.parent = par
 		self.child = list()
@@ -12,9 +11,6 @@ class Node:
 		if self.parent:
 			return str(self.parent.data) + ' : ' + str(self.data)
 		return 'Root : ' + str(self.data)
-
-	# def __del__(self):
-	# 	print ("Object gets destroyed");
 
 	# less than function that does a comparison between two nodes
 	def __lt__(self, node):
@@ -26,7 +22,6 @@ class Node:
 
 	# merge new_node sub-tree into self node
 	def _add(self, new_node):
-		# print ("Node _add: " + str(new_node.data) + ' to ' + str(self.data))
 		for child in new_node.child:
 			child.parent = self
 		self.data.extend(new_node.data)
@@ -39,7 +34,6 @@ class Node:
 
 	# find correct node to insert new node into tree
 	def _insert(self, new_node):
-		# print ('Node _insert: ' + str(new_node.data) + ' into ' + str(self.data))
 		# leaf node - add data to leaf and rebalance tree
 		if self._isLeaf():
 			self._add(new_node)
@@ -55,7 +49,6 @@ class Node:
 
 	# 3 items in node, split into new sub-tree and add to parent
 	def _split(self):
-		# print("Node _split: " + str(self.data))
 		left_child = Node(self.data[0], self)
 		right_child = Node(self.data[2], self)
 		if self.child:
@@ -81,7 +74,6 @@ class Node:
 
 	# find an item in the tree; return item, or False if not found
 	def _find(self, item):
-		# print ("Find " + str(item))
 		if item in self.data:
 			return self.data
 		elif self._isLeaf():
@@ -94,18 +86,20 @@ class Node:
 					return self.child[i]._find(item)
 
 	def removeAndFindSuccessor(self, item):
+		# Checks which location in the node the data item is
 		if self.data[0] == item:
 			loc = 0
 		elif self.data[1] == item:
 			loc = 1
+		# Removes the item thats being deleted
 		self.data.remove(item)
+		# If the item being deleted was in the left position in the 3-node
+		# then goes into here
 		if loc == 0:
 			# Left data has been deleted so go down middle route for successor
 			node = self.child[1]
 			while(node._isLeaf() == False):
-				print("searching")
 				node = node.child[0]
-			print("successor is " + str(node.data[0]))
 			# Check if the successor code has a spare piece of data
 			if len(node.data) == 2:
 				# Has a spare and can take the successor
@@ -114,14 +108,14 @@ class Node:
 				self.data.sort()
 			else:
 				 # Doesn't have a spare piece of data
-				 print("Case 3")
+				 pass
+		# If the item being deleted was in the right position in the 3-node
+		# then goes into here
 		elif loc == 1:
 			# Right data has been deleted so go down right route for successor
 			node = self.child[2]
 			while(node._isLeaf() == False):
-				print("searching")
 				node = node.child[0]
-			print("successor is " + str(node.data[0]))
 			# Check if the successor code has a spare piece of data
 			if len(node.data) == 2:
 				# Has a spare and can take the successor
@@ -130,8 +124,8 @@ class Node:
 				self.data.sort()
 			else:
 				 # Doesn't have a spare piece of data
-				 print("Case 3")
-
+				 pass
+	# For this case no other action must be taken
 	def case11(self, item):
 		pass
 
@@ -140,7 +134,6 @@ class Node:
 		# Checks whether parent is a 2-node or 3-node
 		if len(self.parent.child) == 3:
 			for x in range(len(self.parent.child)):
-				print("the length of children: " + str(len(self.parent.child)))
 				if self.parent.child[x].data == []:
 					i = x
 			if i == 0:
@@ -293,6 +286,8 @@ class Node:
 			if self._isLeaf():
 				self.case1(item)
 			else:
+				# As it isn't a leaf node then the deletion is slightly more complicated
+				# So it must find the inorder successor
 				self.removeAndFindSuccessor(item)
 			return self.data
 		elif self._isLeaf():
@@ -305,6 +300,7 @@ class Node:
 					return self.child[i]._remove(item)
 
 	def _findTightFit(self, item):
+		# Finds the best bin for the package to be stored into
 		current_lowest = None
 		node = self
 		while(node._isLeaf() == False):
@@ -343,22 +339,14 @@ class Node:
 			if len(node.data) == 2:
 				if item <= node.data[1]:
 					current_lowest = node.data[1]
-		print("tighest fit found was " + str(current_lowest))
 		return current_lowest
-		# if len(node.data) == 1:
-		# 	if node.data[0] == item:
-		# 		return node.data[0]
-		# elif len(node.data) == 2:
-		# 	if node.data[0] == item:
-		# 		return node.data[0]
-		# 	elif node.data[1] == item:
-		# 		return node.data[1]
-	# print preorder traversal
+
 	def _preorder(self):
 		print (self)
 		for child in self.child:
 			child._preorder()
 
+# All the functions used by the user on the Tree
 class Tree:
 	def __init__(self):
 		print("Tree __init__")
@@ -399,15 +387,27 @@ class Tree:
 		if self.root != None:
 			self.root._preorder()
 
+# Initialises the Tree
 tree = Tree()
 
+# List of packages that will be packed into bins
 lst_of_packages = [34, 3, 72, 46, 44, 29, 89, 74, 22]
-
+# Counter to store how many bins have been initialised
+amm_of_bins_used = 0
+# Loops through all the packages one-by-one and stores them in a bin
 for package in lst_of_packages:
+	# Finds the best bin for the package
 	bestFitBin = tree.findTightFit(package)
+	# If it couldn't find a bin then initialise a new bin
 	if bestFitBin == None:
 		tree.insert(100 - package)
+		amm_of_bins_used += 1
+	# If it did find a suitable bin, remove the old data item and insert the
+	# new residual capacity of the bin
 	else:
 		tree.remove(bestFitBin)
 		tree.insert(bestFitBin - package)
 	tree.preorder()
+
+# Prints the total amount of bins that were initialised to store the packages
+print("Total amount of bins initialised for this example: " + str(amm_of_bins_used))
