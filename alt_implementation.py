@@ -387,27 +387,52 @@ class Tree:
 		if self.root != None:
 			self.root._preorder()
 
-# Initialises the Tree
-tree = Tree()
+def runTests():
+	testTree = Tree()
+	testInsert(testTree)
+	print("testInsert passed")
+	testTightFit(testTree)
+	print("testTightFit passed")
+	testRemove(testTree)
+	print("testRemove passed")
 
-# List of packages that will be packed into bins
-lst_of_packages = [34, 3, 72, 46, 44, 29, 89, 74, 22]
-# Counter to store how many bins have been initialised
-amm_of_bins_used = 0
-# Loops through all the packages one-by-one and stores them in a bin
-for package in lst_of_packages:
-	# Finds the best bin for the package
-	bestFitBin = tree.findTightFit(package)
-	# If it couldn't find a bin then initialise a new bin
-	if bestFitBin == None:
-		tree.insert(100 - package)
-		amm_of_bins_used += 1
-	# If it did find a suitable bin, remove the old data item and insert the
-	# new residual capacity of the bin
-	else:
-		tree.remove(bestFitBin)
-		tree.insert(bestFitBin - package)
-	tree.preorder()
+def testInsert(testTree):
+	list = [20,40,60,80]
+	for package in list:
+		testTree.insert(package)
+	assert(testTree.root.data[0] == 40)
 
-# Prints the total amount of bins that were initialised to store the packages
-print("Total amount of bins initialised for this example: " + str(amm_of_bins_used))
+
+def testTightFit(testTree):
+	assert(testTree.findTightFit(25) == 40)
+
+def testRemove(testTree):
+	pass
+
+def bestFitBPP():
+	# Initialises the Tree
+	tree = Tree()
+
+	# List of packages that will be packed into bins
+	lst_of_packages = [34, 3, 72, 46, 44, 29, 89, 74, 22]
+	# Counter to store how many bins have been initialised
+	amm_of_bins_used = 0
+	# Loops through all the packages one-by-one and stores them in a bin
+	for package in lst_of_packages:
+		# Finds the best bin for the package
+		bestFitBin = tree.findTightFit(package)
+		# If it couldn't find a bin then initialise a new bin
+		if bestFitBin == None:
+			tree.insert(100 - package)
+			amm_of_bins_used += 1
+		# If it did find a suitable bin, remove the old data item and insert the
+		# new residual capacity of the bin
+		else:
+			tree.remove(bestFitBin)
+			tree.insert(bestFitBin - package)
+		tree.preorder()
+
+	# Prints the total amount of bins that were initialised to store the packages
+	print("Total amount of bins initialised for this example: " + str(amm_of_bins_used))
+
+runTests()
