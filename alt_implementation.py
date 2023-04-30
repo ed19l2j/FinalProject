@@ -1,5 +1,6 @@
 # 2-3 Tree
 # balanced tree data structure with up to 2 data items per node
+import time
 
 class Node:
 	def __init__(self, data, par = None):
@@ -349,11 +350,11 @@ class Node:
 # All the functions used by the user on the Tree
 class Tree:
 	def __init__(self):
-		print("Tree __init__")
+		#print("Tree __init__")
 		self.root = None
 
 	def insert(self, item):
-		print("Tree insert: " + str(item))
+		#print("Tree insert: " + str(item))
 		if self.root is None:
 			self.root = Node(item)
 		else:
@@ -366,7 +367,7 @@ class Tree:
 		return self.root._find(item)
 
 	def remove(self, item):
-		print("Tree remove: " + str(item))
+		#print("Tree remove: " + str(item))
 		return self.root._remove(item)
 
 	def printTop2Tiers(self):
@@ -377,7 +378,7 @@ class Tree:
 		print(' ')
 
 	def findTightFit(self, item):
-		print("Finding tighest fit for " + str(item))
+		#print("Finding tighest fit for " + str(item))
 		if self.root is None:
 			return None
 		return self.root._findTightFit(item)
@@ -390,11 +391,11 @@ class Tree:
 def runTests():
 	testTree = Tree()
 	testInsert(testTree)
-	print("testInsert passed")
+	#print("testInsert passed")
 	testTightFit(testTree)
-	print("testTightFit passed")
+	#print("testTightFit passed")
 	testRemove(testTree)
-	print("testRemove passed")
+	#print("testRemove passed")
 
 def testInsert(testTree):
 	list = [20,40,60,80]
@@ -430,9 +431,18 @@ def bestFitBPP():
 		else:
 			tree.remove(bestFitBin)
 			tree.insert(bestFitBin - package)
-		tree.preorder()
+		#tree.preorder()
 
 	# Prints the total amount of bins that were initialised to store the packages
 	print("Total amount of bins initialised for this example: " + str(amm_of_bins_used))
 
-runTests()
+def runtimeTest():
+	for p in range(10):
+		start = time.time()
+		for i in range(1000):
+			bestFitBPP()
+		end = time.time()
+		print("{:.4f}".format(round(end - start, 4)))
+
+
+bestFitBPP()

@@ -1,6 +1,6 @@
 # Implementing Red-Black Tree in Python
 # Adapted from https://www.programiz.com/dsa/red-black-tree
-
+import time
 import sys
 from typing import Type, TypeVar, Iterator
 
@@ -472,8 +472,17 @@ def bestFitBPP():
 		else:
 			tree.delete(bestFitBin)
 			tree.insert(bestFitBin - package)
-	tree.print_tree()
+	#tree.print_tree()
 	# Prints the total amount of bins that were initialised to store the packages
 	print("Total amount of bins initialised for this example: " + str(amm_of_bins_used))
+
+def runtimeTest():
+	for p in range(10):
+		start = time.time()
+		for i in range(1000):
+			bestFitBPP()
+		end = time.time()
+		print("{:.4f}".format(round(end - start, 4)))
+
 
 bestFitBPP()
