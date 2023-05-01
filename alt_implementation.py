@@ -391,11 +391,13 @@ class Tree:
 def runTests():
 	testTree = Tree()
 	testInsert(testTree)
-	#print("testInsert passed")
+	print("testInsert passed")
 	testTightFit(testTree)
-	#print("testTightFit passed")
+	print("testTightFit passed")
 	testRemove(testTree)
-	#print("testRemove passed")
+	print("testRemove passed")
+	testFind(testTree)
+	print("testFind passed")
 
 def testInsert(testTree):
 	list = [20,40,60,80]
@@ -403,12 +405,15 @@ def testInsert(testTree):
 		testTree.insert(package)
 	assert(testTree.root.data[0] == 40)
 
-
 def testTightFit(testTree):
 	assert(testTree.findTightFit(25) == 40)
 
 def testRemove(testTree):
-	pass
+	testTree.remove(80)
+	assert(len(testTree.root.child[1].data) == 1)
+
+def testFind(testTree):
+	assert(testTree.find(60) == [60])
 
 def bestFitBPP():
 	# Initialises the Tree
@@ -431,7 +436,7 @@ def bestFitBPP():
 		else:
 			tree.remove(bestFitBin)
 			tree.insert(bestFitBin - package)
-		#tree.preorder()
+		tree.preorder()
 
 	# Prints the total amount of bins that were initialised to store the packages
 	print("Total amount of bins initialised for this example: " + str(amm_of_bins_used))
@@ -445,4 +450,4 @@ def runtimeTest():
 		print("{:.4f}".format(round(end - start, 4)))
 
 
-bestFitBPP()
+runTests()
